@@ -13,11 +13,15 @@ jobs:
       - name: Setup Bun
         uses: ./.github/actions/setup-bun
 
-      - name: Setup Node for npm auth
+      - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
+
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build all platform binaries
         working-directory: packages/opencode
@@ -26,8 +30,6 @@ jobs:
       - name: Publish to npm
         working-directory: packages/opencode
         run: bun run script/publish.ts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify install from npm
         run: |
