@@ -21,7 +21,7 @@ jobs:
       - name: Configure npm auth
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_INDICODE_AUTOMATION }}
 
       - name: Build all platform binaries
         working-directory: packages/opencode
