@@ -50,6 +50,8 @@ const createEmbeddedWebUIBundle = async () => {
 const embeddedFileMap = skipEmbedWebUi ? null : await createEmbeddedWebUIBundle()
 const treeSitterWorker = await Bun.file(fileURLToPath(import.meta.resolve("@opentui/core/parser.worker"))).text()
 
+// IndiCode currently only targets macOS and Windows - Linux support (plus the
+// baseline/musl variants) can come back once the core Mac/Windows path is solid.
 const allTargets: {
   os: string
   arch: "arm64" | "x64"
@@ -57,35 +59,6 @@ const allTargets: {
   avx2?: false
 }[] = [
   {
-    os: "linux",
-    arch: "arm64",
-  },
-  {
-    os: "linux",
-    arch: "x64",
-  },
-  {
-    os: "linux",
-    arch: "x64",
-    avx2: false,
-  },
-  {
-    os: "linux",
-    arch: "arm64",
-    abi: "musl",
-  },
-  {
-    os: "linux",
-    arch: "x64",
-    abi: "musl",
-  },
-  {
-    os: "linux",
-    arch: "x64",
-    abi: "musl",
-    avx2: false,
-  },
-  {
     os: "darwin",
     arch: "arm64",
   },
@@ -94,22 +67,12 @@ const allTargets: {
     arch: "x64",
   },
   {
-    os: "darwin",
-    arch: "x64",
-    avx2: false,
-  },
-  {
     os: "win32",
     arch: "arm64",
   },
   {
     os: "win32",
     arch: "x64",
-  },
-  {
-    os: "win32",
-    arch: "x64",
-    avx2: false,
   },
 ]
 
