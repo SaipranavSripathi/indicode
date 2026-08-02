@@ -1,0 +1,25 @@
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
+
+      - name: Build all platform binaries
+        working-directory: packages/opencode
+        run: bun run script/build.ts --skip-embed-web-ui
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: indicode-binaries
+          path: packages/opencode/dist/**
+          retention-days: 7
