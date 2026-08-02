@@ -72,10 +72,11 @@ await Bun.file(`./dist/${pkg.name}/package.json`).write(
   ),
 )
 
-const tasks = Object.entries(binaries).map(async ([name]) => {
+// Publishing all platform packages concurrently trips npm's registry rate limit
+// (E429) on a burst of large-file uploads from one token - go one at a time instead.
+for (const [name] of Object.entries(binaries)) {
   await publish(`./dist/${name}`, name, binaries[name])
-})
-await Promise.all(tasks)
+}
 await publish(`./dist/${pkg.name}`, `${pkg.name}-ai`, version)
 
 // Unlike upstream, IndiCode doesn't publish to Docker/AUR/Homebrew - no registry
