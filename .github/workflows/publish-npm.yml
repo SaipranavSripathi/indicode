@@ -1,0 +1,36 @@
+name: publish-npm
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
+
+      - name: Setup Node for npm auth
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build all platform binaries
+        working-directory: packages/opencode
+        run: bun run script/build.ts --skip-embed-web-ui
+
+      - name: Publish to npm
+        working-directory: packages/opencode
+        run: bun run script/publish.ts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify install from npm
+        run: |
+          sleep 10
+          npm install -g indicode-ai@dev
+          indicode --version
