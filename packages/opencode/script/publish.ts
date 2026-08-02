@@ -21,6 +21,9 @@ async function publish(dir: string, name: string, version: string) {
   }
   await $`bun pm pack`.cwd(dir)
   await $`npm publish *.tgz --access public --tag ${Script.channel}`.cwd(dir)
+  // npm rate-limits bursts of brand-new package creation; a short gap between
+  // publishes keeps us under that threshold instead of hitting E429.
+  await new Promise((resolve) => setTimeout(resolve, 20_000))
 }
 
 const binaries: Record<string, string> = {}
