@@ -50,8 +50,11 @@ const INDICODE_DEFAULT_CONFIG = {
         apiKey: "{env:SARVAM_API_KEY}",
       },
       models: {
-        "sarvam-105b": { name: "Sarvam 105B", limit: { context: 128000, output: 8192 } },
-        "sarvam-30b": { name: "Sarvam 30B", limit: { context: 64000, output: 8192 } },
+        // 4096 matches Sarvam's "starter" tier max_tokens cap - the default most
+        // students will be on. Override in your own opencode.json if you're on a
+        // higher tier. sarvam-30b is gone from Sarvam's side (deprecated in favor
+        // of sarvam-105b), so it's not offered here anymore either.
+        "sarvam-105b": { name: "Sarvam 105B", limit: { context: 128000, output: 4096 } },
       },
     },
     "krutrim-ai": {
